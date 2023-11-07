@@ -16,6 +16,14 @@ using Microsoft.Win32;
 
 namespace FormularioEmpleadoRubenGomez
 {
+    internal class User
+    {
+
+        public string nombre { get; set; }
+        public string apellidos { get; set; }
+        public string email { get; set; }
+        public long telefono { get; set; }
+    }
     /// <summary>
     /// Lógica de interacción para MainWindow.xaml
     /// </summary>
@@ -40,5 +48,75 @@ namespace FormularioEmpleadoRubenGomez
             }
             
         }
-    }
+
+        private void Txt_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+            if(sender is TextBox textBox){
+                if (textBox.Text == "Dirección" || textBox.Text == "Ciudad" || textBox.Text == "Provincia" || textBox.Text == "Código Postal" || textBox.Text == "País")
+                    {
+                    textBox.Text = "";
+                }
+            }
+        }
+        private void Txt_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+            if (sender is TextBox textBox){
+                if(string.IsNullOrWhiteSpace(textBox.Text)){
+                    if(textBox.Name == "calle"){
+                        textBox.Text = "Dirección";
+                    }
+                    else if (textBox.Name == "ciudad")
+                    {
+                        textBox.Text = "Ciudad";
+                    }
+                    else if (textBox.Name == "provincia")
+                    {
+                        textBox.Text = "Provincia";
+                    }
+                    else if (textBox.Name == "codigoPostal")
+                    {
+                        textBox.Text = "Código Postal";
+                    }
+                    else if (textBox.Name == "pais")
+                    {
+                        textBox.Text = "País";
+                    }
+                }
+            }
+        }
+
+        private void Cancelar_Click(object sender, RoutedEventArgs e)
+        {
+            Window mainwindow = new MainWindow();
+            this.Close();
+            mainwindow.Show();
+        }
+
+        private void Guardar_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(nombre.Text) || string.IsNullOrWhiteSpace(apellidos.Text) || string.IsNullOrWhiteSpace(email.Text) || string.IsNullOrWhiteSpace(telefono.Text))
+            {
+
+                MessageBox.Show("Los campos Nombre, Apellidos, Email y Teléfono son obligatorios.");
+                Window mainwindow = new MainWindow();
+                this.Close();
+                mainwindow.Show();
+            }
+            else
+            {
+                try
+                {
+                    List<User> users = new List<User>();
+                    users.Add(new User() { nombre = nombre.Text, apellidos = apellidos.Text, email = apellidos.Text, telefono = int.Parse(telefono.Text) });
+                    datosEmpleados.ItemsSource = users;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.StackTrace);
+                }
+            }
+        }
+    } 
 }
